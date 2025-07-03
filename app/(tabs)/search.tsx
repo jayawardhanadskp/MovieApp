@@ -1,19 +1,20 @@
 import { View, Text, Image, FlatList, ActivityIndicator } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { images } from '@/constants/images'
 import MovieCard from '@/components/MovieCard'
-import { useRouter } from 'expo-router'
 import { fetchMovies } from '@/services/api'
 import useFetch from '@/services/useFetch'
 import { icons } from '@/constants/icons'
 import SearchBar from "@/components/SearchBar";
 
 const Search = () => {
-  const router = useRouter();
+
+  
+  const [searchQueary, setSearchQueary] = useState('');
   
     const { data: movies, loading, error } = useFetch(() => fetchMovies({
-      query: ''
-    }));
+      query: searchQueary
+    }), true)
     
   return (
     <View className='flex-1 bg-black'>
@@ -38,7 +39,11 @@ const Search = () => {
             </View>
 
             <View className='flex-1 my-5'>
-              <SearchBar placeholder='Search Movies... ' />
+              <SearchBar 
+                placeholder='Search Movies... '
+                value={searchQueary}
+                onChangeText={(text: string) => setSearchQueary(text)}
+               />
             </View>
 
             {loading && (
@@ -51,10 +56,10 @@ const Search = () => {
               </Text>
             )}
 
-            {!loading && !error && 'SEARCH TERM'.trim() && movies?.length > 0 && (
+            {!loading && !error && searchQueary.trim() && movies?.length > 0 && (
               <Text className='text-xl text-white font-bold'>
                 Search Results for{' '} 
-                <Text className='text-accent'>SEARCH TERM</Text>
+                <Text className='text-accent'>{searchQueary}</Text>
               </Text>
             )}
           </>
